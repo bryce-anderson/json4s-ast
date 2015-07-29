@@ -25,25 +25,31 @@ case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 }
 
-sealed abstract class JBoolean extends JValue {
-  def isEmpty: Boolean
-  def get: Boolean
+final class JBoolean private(val isTrue: Boolean) extends JValue {
+  private val someGet = Some(isTrue)
+  
+  def isEmpty: Boolean = false
+
+  def get: Boolean = isTrue
+
+  override def productElement(n: Int): Any = if (n == 0) isTrue else throw new IndexOutOfBoundsException
+
+  override def productArity: Int = 1
+
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[JBoolean]
 }
 
 object JBoolean {
-  def apply(x: Boolean): JBoolean = if (x) JTrue else JFalse
-  def unapply(x: JBoolean): Some[Boolean] = Some(x.isEmpty)
+  val True = new JBoolean(true)
+  val False = new JBoolean(false)
+
+  def apply(x: Boolean): JBoolean = if (x) True else False
+
+  def unapply(x: Boolean): JBoolean = apply(x)
+  
+  def unapply(x: JBoolean): Some[Boolean] = x.someGet
 }
 
-case object JTrue extends JBoolean {
-  def isEmpty = false
-  def get = true
-}
-
-case object JFalse extends JBoolean {
-  def isEmpty = false
-  def get = false
-}
 
 case class JField(field:String, value:JValue)
 

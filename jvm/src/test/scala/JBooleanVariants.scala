@@ -2,9 +2,21 @@ import org.scalameter.PerformanceTest.Microbenchmark
 import org.scalameter.api._
 
 
-case class JBoolean(boolean: Boolean)
+//case class JBoolean(boolean: Boolean)
 
 object JBooleanVariants extends Microbenchmark {
+
+  import org.json4s.basic.ast.JBoolean
+
+  val x = JBoolean.True
+
+  val JBoolean(y) = true
+
+  x match {
+    case JBoolean(true)  => println("Its true!")
+    case JBoolean(false) => println("Its false!")
+  }
+
   val sizes: Gen[Int] = Gen.range("size")(300000, 1500000, 300000)
 
   val bools: Gen[Boolean] = for {
