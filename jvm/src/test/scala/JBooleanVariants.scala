@@ -1,20 +1,18 @@
 import org.scalameter.PerformanceTest.Microbenchmark
 import org.scalameter.api._
 
-
-//case class JBoolean(boolean: Boolean)
-
 object JBooleanVariants extends Microbenchmark {
 
-  import org.json4s.basic.ast.JBoolean
+  import org.json4s.basic.ast._
+
+  val s = JString("foo")
 
   val x = JBoolean.True
 
-  val JBoolean(y) = true
-
-  x match {
+  s match {
     case JBoolean(true)  => println("Its true!")
     case JBoolean(false) => println("Its false!")
+    case JString(s)      => println(s"Its a string: $s")
   }
 
   val sizes: Gen[Int] = Gen.range("size")(300000, 1500000, 300000)

@@ -27,10 +27,6 @@ case class JNumber(value: String) extends JValue {
 
 final class JBoolean private(val isTrue: Boolean) extends JValue {
   private val someGet = Some(isTrue)
-  
-  def isEmpty: Boolean = false
-
-  def get: Boolean = isTrue
 
   override def productElement(n: Int): Any = if (n == 0) isTrue else throw new IndexOutOfBoundsException
 
@@ -45,9 +41,10 @@ object JBoolean {
 
   def apply(x: Boolean): JBoolean = if (x) True else False
 
-  def unapply(x: Boolean): JBoolean = apply(x)
-  
-  def unapply(x: JBoolean): Some[Boolean] = x.someGet
+  def unapply(x: JValue): Option[Boolean] = x match {
+    case x: JBoolean => x.someGet
+    case _           => None
+  }
 }
 
 
